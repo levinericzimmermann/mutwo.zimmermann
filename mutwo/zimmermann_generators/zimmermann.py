@@ -38,6 +38,28 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
     which avoids adding undesired parts to the resulting :class:`treelib.Tree`.
     The implementation is based on the text "Bewegungen im unendlichen Tonraum"
     (2018) from L.E. Zimmermann.
+
+    **Example**:
+
+    >>> from mutwo import zimmermann_generators
+    >>> pitch_based_context_free_grammar = (
+    >>>     zimmermann_generators.PitchBasedContextFreeGrammar.from_constraints(
+    >>>         prime_number_to_maximum_exponent_dict={3: 1, 5: 1},
+    >>>         maximum_cent_deviation=550,
+    >>>     )
+    >>> )
+    >>> resolution = pitch_based_context_free_grammar.resolve(
+    >>>     zimmermann_generators.JustIntonationPitchNonTerminal("5/4"),
+    >>>     limit=3
+    >>> )
+    >>> resolution.show()
+    (5/4)
+    ├── (15/16 4/3)
+    │   └── (15/16 5/4 16/15)
+    │       └── (15/16 15/16 4/3 16/15)
+    └── (4/3 15/16)
+        └── (16/15 5/4 15/16)
+            └── (16/15 4/3 15/16 15/16)
     """
 
     @staticmethod
