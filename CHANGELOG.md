@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [0.55.0] - 2022-03-06
+
+## [0.3.0] - 2022-03-06
+
+### Added
+- `euclidean_interlocking` in `zimmermann_generators`
+
+
+## [0.2.0] - 2022-03-06
 
 ### Added
 - `add_unison` option in the `from_constraints` class method of `PitchBasedContextFreeGrammar`

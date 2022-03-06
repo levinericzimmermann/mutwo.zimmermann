@@ -161,5 +161,32 @@ class PitchBasedContextFreeGrammarTests(unittest.TestCase):
             self.assertEqual(expected_leaf.tag, real_leaf.tag)
 
 
+class EuclideanInterlockingTest(unittest.TestCase):
+    def test_euclidean_interlocking(self):
+        sequence0, sequence1 = [0, 0, 0], [1, 1]
+        self.assertEqual(
+            zimmermann_generators.euclidean_interlocking(sequence0, sequence1),
+            (0, 1, 0, 0, 1),
+        )
+
+    def test_empty_euclidean_interlocking(self):
+        self.assertEqual(
+            zimmermann_generators.euclidean_interlocking(),
+            tuple([]),
+        )
+
+    def test_single_euclidean_interlocking(self):
+        self.assertEqual(
+            zimmermann_generators.euclidean_interlocking([1, 2, 3]),
+            (1, 2, 3),
+        )
+
+    def test_euclidean_interlocking_with_empty_element(self):
+        self.assertEqual(
+            zimmermann_generators.euclidean_interlocking([1, 2, 3], [], []),
+            (1, 2, 3),
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
