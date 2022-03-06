@@ -84,6 +84,47 @@ class PitchBasedContextFreeGrammarTests(unittest.TestCase):
             self.assertEqual(expected_rule.left_side, real_rule.left_side)
             self.assertEqual(expected_rule.right_side, real_rule.right_side)
 
+    def test_from_constraints_with_unison(self):
+        pitch_based_context_free_grammar = (
+            zimmermann_generators.PitchBasedContextFreeGrammar.from_constraints(
+                prime_number_to_maximum_exponent_dict={},
+                add_unison=True,
+                maximum_cent_deviation=1200,
+                allowed_octave_sequence=(-1, 0, 1),
+            )
+        )
+        self.assertEqual(
+            pitch_based_context_free_grammar.context_free_grammar_rule_tuple,
+            (
+                common_generators.ContextFreeGrammarRule(
+                    zimmermann_generators.JustIntonationPitchNonTerminal("1/1"),
+                    (
+                        zimmermann_generators.JustIntonationPitchNonTerminal("1/2"),
+                        zimmermann_generators.JustIntonationPitchNonTerminal("2/1"),
+                    ),
+                ),
+                common_generators.ContextFreeGrammarRule(
+                    zimmermann_generators.JustIntonationPitchNonTerminal("1/1"),
+                    (
+                        zimmermann_generators.JustIntonationPitchNonTerminal("2/1"),
+                        zimmermann_generators.JustIntonationPitchNonTerminal("1/2"),
+                    ),
+                ),
+            ),
+        )
+        self.assertEqual(
+            pitch_based_context_free_grammar.non_terminal_tuple,
+            (
+                zimmermann_generators.JustIntonationPitchNonTerminal("1/2"),
+                zimmermann_generators.JustIntonationPitchNonTerminal("1/1"),
+                zimmermann_generators.JustIntonationPitchNonTerminal("2/1"),
+            ),
+        )
+        self.assertEqual(
+            pitch_based_context_free_grammar.terminal_tuple,
+            tuple([]),
+        )
+
     def test_resolve(self):
         start = zimmermann_generators.JustIntonationPitchNonTerminal("3/4")
         resolution = self.pitch_based_context_free_grammar.resolve(start, limit=1)

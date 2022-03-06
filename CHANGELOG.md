@@ -6,3 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.55.0] - 2022-03-06
+
+### Added
+- `add_unison` option in the `from_constraints` class method of `PitchBasedContextFreeGrammar`
+
+

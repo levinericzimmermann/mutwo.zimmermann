@@ -111,6 +111,7 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         prime_number_to_maximum_exponent_dict: dict[int, int],
         allowed_octave_sequence: typing.Sequence[int],
         maximum_cent_deviation: float,
+        add_unison: bool,
     ) -> tuple[
         tuple[JustIntonationPitchNonTerminal, ...],
         tuple[JustIntonationPitchTerminal, ...],
@@ -126,9 +127,15 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
             for prime_number, maximum_exponent in prime_number_to_maximum_exponent_dict.items()
         }
         # All occuring primes until the highest prime
-        ascending_prime_tuple = tuple(primesieve.primes(max(prime_number_tuple)))
+        try:
+            ascending_prime_tuple = tuple(primesieve.primes(max(prime_number_tuple)))
+        # If there are no prime numbers we can simply use an empty tuple
+        except ValueError:
+            ascending_prime_tuple = tuple([])
 
-        for n_prime_numbers in range(1, len(prime_number_to_maximum_exponent_dict) + 1):
+        for n_prime_numbers in range(
+            not add_unison, len(prime_number_to_maximum_exponent_dict) + 1
+        ):
             for combined_prime_number_tuple in itertools.combinations(
                 prime_number_tuple, n_prime_numbers
             ):
@@ -165,6 +172,7 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         },
         allowed_octave_sequence: typing.Sequence[int] = (-1, 0),
         maximum_cent_deviation: float = 500,
+        add_unison: bool = False,
     ) -> PitchBasedContextFreeGrammar:
         """Create rules based on various constraints.
 
@@ -172,6 +180,7 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         :param prime_number_sequence:
         :param allowed_octave_sequence:
         :param maximum_cent_deviation:
+        :param add_unison:
         """
 
         assert (
@@ -188,11 +197,16 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
             prime_number_to_maximum_exponent_dict,
             allowed_octave_sequence,
             maximum_cent_deviation,
+            add_unison,
         )
 
-        element_tuple = non_terminal_tuple + terminal_tuple
+        element_iterator = filter(
+                lambda terminal_or_non_terminal: terminal_or_non_terminal
+                != music_parameters.JustIntonationPitch("1/1"),
+                non_terminal_tuple + terminal_tuple,
+            )
         rule_list = []
-        for element0, element1 in itertools.combinations(element_tuple, 2):
+        for element0, element1 in itertools.combinations(element_iterator, 2):
             summed = element0 + element1
             if summed in non_terminal_tuple:
                 non_terminal = non_terminal_tuple[non_terminal_tuple.index(summed)]
@@ -228,6 +242,9 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         ],
         parent: typing.Optional[treelib.Node] = None,
     ):
+        # We only add an element if the goal isn't already reached
+        # in a step in between and if there aren't any pitch
+        # repetitions.
         pitch_accumulation = tuple(
             core_utilities.accumulate_from_n(
                 data, music_parameters.JustIntonationPitch("1/1")
