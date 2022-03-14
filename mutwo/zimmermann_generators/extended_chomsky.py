@@ -62,6 +62,10 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
             └── (16/15 4/3 15/16 15/16)
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._exponent_tuple_tuple_to_status = {}
+
     @staticmethod
     def _maximum_exponent_to_allowed_exponent_tuple(
         maximum_exponent: int,
@@ -242,22 +246,31 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         ],
         parent: typing.Optional[treelib.Node] = None,
     ):
-        # We only add an element if the goal isn't already reached
-        # in a step in between and if there aren't any pitch
-        # repetitions.
-        pitch_accumulation = tuple(
-            core_utilities.accumulate_from_n(
-                data, music_parameters.JustIntonationPitch("1/1")
-            )
+        exponent_tuple_tuple = tuple(
+            just_intonation_pitch.exponent_tuple for just_intonation_pitch in data
         )
+        if exponent_tuple_tuple in self._exponent_tuple_tuple_to_status:
+            status = self._exponent_tuple_tuple_to_status[exponent_tuple_tuple]
+        else:
+            # We only add an element if the goal isn't already reached
+            # in a step in between and if there aren't any pitch
+            # repetitions.
+            pitch_accumulation = tuple(
+                core_utilities.accumulate_from_n(
+                    data, music_parameters.JustIntonationPitch("1/1")
+                )
+            )
 
-        # Special treatment for movement 1/1: here the first and the
-        # last pitches are equal and we should skip one in order
-        # to pass the test.
-        if pitch_accumulation[0] == pitch_accumulation[-1]:
-            pitch_accumulation = pitch_accumulation[1:]
+            # Special treatment for movement 1/1: here the first and the
+            # last pitches are equal and we should skip one in order
+            # to pass the test.
+            if pitch_accumulation[0] == pitch_accumulation[-1]:
+                pitch_accumulation = pitch_accumulation[1:]
 
-        if len(core_utilities.uniqify_sequence(pitch_accumulation)) == len(
-            pitch_accumulation
-        ):
+            status = len(core_utilities.uniqify_sequence(pitch_accumulation)) == len(
+                pitch_accumulation
+            )
+            self._exponent_tuple_tuple_to_status.update({exponent_tuple_tuple: status})
+
+        if status:
             super()._add_node(tree, data, parent)
