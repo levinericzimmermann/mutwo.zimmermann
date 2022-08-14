@@ -31,9 +31,9 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.ext-core>=0.56.0, <0.58.0",
-        "mutwo.ext-music>=0.8.0, <0.13.0",
-        "mutwo.ext-common-generators>=0.8.0, <1.0.0",
+        "mutwo.core>=0.61.4, <1.0.0",
+        "mutwo.music>=0.17.0, <1.0.0",
+        "mutwo.common>=0.9.0, <1.0.0",
     ],
     extras_require=extras_require,
     python_requires=">=3.9, <4",

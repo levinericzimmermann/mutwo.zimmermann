@@ -95,7 +95,7 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         just_intonation_pitch = music_parameters.JustIntonationPitch(
             complete_exponent_list
         ).register(octave)
-        if abs(just_intonation_pitch.cents) <= maximum_cent_deviation:
+        if abs(just_intonation_pitch.interval) <= maximum_cent_deviation:
             harmonicity_simplified_barlow = (
                 just_intonation_pitch.harmonicity_simplified_barlow
             )
