@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2022-08-14
+
+### Changed
+- package name from `mutwo.ext-zimmermann` to `mutwo.zimmermann`
+
 
 ## [0.3.0] - 2022-03-06
 
