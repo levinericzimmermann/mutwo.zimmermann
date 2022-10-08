@@ -4,8 +4,8 @@ from __future__ import annotations
 import itertools
 import typing
 
-import primesieve
 import treelib
+from sympy import primerange
 
 from mutwo import common_generators
 from mutwo import core_utilities
@@ -132,7 +132,7 @@ class PitchBasedContextFreeGrammar(common_generators.ContextFreeGrammar):
         }
         # All occuring primes until the highest prime
         try:
-            ascending_prime_tuple = tuple(primesieve.primes(max(prime_number_tuple)))
+            ascending_prime_tuple = tuple(primerange(max(prime_number_tuple) + 1))
         # If there are no prime numbers we can simply use an empty tuple
         except ValueError:
             ascending_prime_tuple = tuple([])
