@@ -1,3 +1,4 @@
+import datetime
 import typing
 import unittest
 
@@ -225,6 +226,25 @@ class EuclideanInterlockingTest(unittest.TestCase):
         self.assertEqual(
             zimmermann_generators.euclidean_interlocking([1, 2, 3], [], []),
             (1, 2, 3),
+        )
+
+
+class TitleTest(unittest.TestCase):
+    def test_golden_number(self):
+        self.assertEqual(
+            zimmermann_generators.golden_number(datetime.datetime(2022, 1, 1)), 9
+        )
+        self.assertEqual(
+            zimmermann_generators.golden_number(datetime.datetime(2021, 1, 1)), 8
+        )
+        self.assertEqual(
+            zimmermann_generators.golden_number(datetime.datetime(1, 1, 1)), 2
+        )
+
+    def test_get_title(self):
+        self.assertEqual(
+            zimmermann_generators.get_title(datetime.datetime(2022, 1, 1)),
+            f"9.{zimmermann_generators.constants.GOLDEN_NUMBER_TO_COMPOSITION_COUNTER_DICT[9] + 1}",
         )
 
 
